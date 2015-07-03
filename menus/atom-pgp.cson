@@ -1,0 +1,30 @@
+# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
+'context-menu':
+  'atom-text-editor': [
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'PGP'
+      'submenu': [
+        {
+          'label': 'PGP Encode'
+          'command': 'atom-pgp:encode'
+        }
+        {
+          'label': 'PGP Decode'
+          'command': 'atom-pgp:decode'
+        }
+        {
+          'label': 'PGP Sign'
+          'command': 'atom-pgp:sign'
+        }
+        {
+          'label': 'PGP Verify'
+          'command': 'atom-pgp:verify'
+        }
+      ]
+    ]
+  }
+]

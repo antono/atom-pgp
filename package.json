@@ -1,0 +1,18 @@
+{
+  "name": "atom-pgp",
+  "main": "./lib/atom-pgp",
+  "version": "0.0.1",
+  "description": "PGP Support",
+  "keywords": [
+  ],
+  "activationCommands": {
+    "atom-workspace": ["atom-pgp:encode", "atom-pgp:decode", "atom-pgp:sign", "atom-pgp:verify" ]
+  },
+  "repository": "https://github.com/antono/atom-pgp",
+  "license": "GPLv3",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+  }
+}
