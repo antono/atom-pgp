@@ -37,6 +37,4 @@ describe "AtomPgp", ->
 
       activate('atom-pgp:encode')
 
-      runs ->
-        console.log('hello2')
-        expect(workspaceElement.querySelector('.atom-pgp')).toBeVisible()
+      runs -> expect(workspaceElement.querySelector('.atom-pgp')).toBeVisible()
