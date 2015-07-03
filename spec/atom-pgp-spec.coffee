@@ -1,10 +1,5 @@
 AtomPgp = require '../lib/atom-pgp'
 
-# Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
-#
-# To run a specific `it` or `describe` block add an `f` to the front (e.g. `fit`
-# or `fdescribe`). Remove the `f` to unfocus the block.
-
 describe "AtomPgp", ->
   [workspaceElement, activationPromise] = []
 
@@ -12,50 +7,36 @@ describe "AtomPgp", ->
     workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('atom-pgp')
 
+  activate = (command) ->
+    atom.commands.dispatch workspaceElement, command
+    waitsForPromise ->
+      activationPromise
+
+
   describe "when the atom-pgp:encode event is triggered", ->
 
     it "shows modal password prompt", ->
-      # Before the activation event the view is not on the DOM, and no panel
-      # has been created
       expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
 
-      # This is an activation event, triggering it will cause the package to be
-      # activated.
-      atom.commands.dispatch workspaceElement, 'atom-pgp:encode'
-
-      waitsForPromise ->
-        activationPromise
+      activate('atom-pgp:encode')
 
       runs ->
         expect(workspaceElement.querySelector('.atom-pgp')).toExist()
 
         atomPgpElement = workspaceElement.querySelector('.atom-pgp')
-        expect(atomPgpElement).toExist()
-
         atomPgpPanel = atom.workspace.panelForItem(atomPgpElement)
         expect(atomPgpPanel.isVisible()).toBe true
 
-    it "hides and shows the view", ->
-      # This test shows you an integration test testing at the view level.
+        atomPgpElement = workspaceElement.querySelector('.atom-pgp')
+        expect(atomPgpElement).toExist()
 
-      # Attaching the workspaceElement to the DOM is required to allow the
-      # `toBeVisible()` matchers to work. Anything testing visibility or focus
-      # requires that the workspaceElement is on the DOM. Tests that attach the
-      # workspaceElement to the DOM are generally slower than those off DOM.
+
+    it "shows the view", ->
       jasmine.attachToDOM(workspaceElement)
-
       expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
 
-      # This is an activation event, triggering it causes the package to be
-      # activated.
-      atom.commands.dispatch workspaceElement, 'atom-pgp:encode'
-
-      waitsForPromise ->
-        activationPromise
+      activate('atom-pgp:encode')
 
       runs ->
-        # Now we can test for view visibility
-        atomPgpElement = workspaceElement.querySelector('.atom-pgp')
-        expect(atomPgpElement).toBeVisible()
-        atom.commands.dispatch workspaceElement, 'atom-pgp:encode'
-        expect(atomPgpElement).not.toBeVisible()
+        console.log('hello2')
+        expect(workspaceElement.querySelector('.atom-pgp')).toBeVisible()
