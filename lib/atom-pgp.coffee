@@ -1,6 +1,8 @@
 AtomPgpPasswordPrompt = require './atom-pgp-password-prompt'
 {CompositeDisposable} = require 'atom'
 
+gpg = require './gpg'
+
 module.exports = AtomPgp =
   atomPgpView: null
   modalPanel: null
@@ -40,6 +42,15 @@ module.exports = AtomPgp =
     console.log('Encode...')
     @modalPanel.show()
     @atomPgpPasswordPrompt.focus()
+    @atomPgpPasswordPrompt.onPasswordProvided (password) =>
+      @closePasswordPrompt()
+      editor = atom.workspace.getActiveTextEditor()
+      gpg.encrypt editor.getText(), password, (err, text) =>
+        if err
+          alert(err)
+        else
+          editor.setText(text)
+
 
   decode: ->
     console.log('Decode...')
@@ -51,7 +62,6 @@ module.exports = AtomPgp =
     console.log('Verify...')
 
   closePasswordPrompt: ->
-    console.log('Closing prompt...')
     @modalPanel.hide()
     @atomPgpPasswordPrompt.clear()
     atom.workspace.getActivePane().activate()
