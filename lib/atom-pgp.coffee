@@ -49,8 +49,8 @@ module.exports = AtomPgp =
         if err
           alert(err)
         else
+          editor.createCheckpoint()
           editor.setText(text)
-
 
   decode: ->
     console.log('Decode...')

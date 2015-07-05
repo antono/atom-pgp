@@ -2,7 +2,7 @@ spawn = require('child_process').spawn
 
 exports.testMode = false
 
-exports.encrypt = (text, password, cb) ->
+callGPG = (text, password, params, cb) =>
   result = ""
   errors = ""
 
@@ -10,13 +10,10 @@ exports.encrypt = (text, password, cb) ->
     cb('No password provided', null)
     return
 
-  params = ['--armor', '--symmetric', '--passphrase-fd', '0']
-
   if exports.testMode
     params.push('--no-default-keyring')
     params.push('--keyring=' + __dirname + '/../spec/keyring/test.gpg')
     console.log("GPG params: " + params.join(' '))
-
 
   pgp = spawn('gpg', params)
 
@@ -24,7 +21,7 @@ exports.encrypt = (text, password, cb) ->
     result += data.toString()
 
   pgp.stderr.on 'data', (data) ->
-    console.error("PGP: " + data.toString)
+    console.error("PGP: " + data.toString())
     errors += data.toString()
 
   pgp.stdin.write(password + '\n')
@@ -35,3 +32,12 @@ exports.encrypt = (text, password, cb) ->
       cb(null, result)
     else
       cb(errors, null)
+
+
+exports.encrypt = (text, password, cb) ->
+  params = ['--armor', '--symmetric', '--passphrase-fd', '0']
+  callGPG(text, password, params, cb)
+
+exports.decrypt = (text, password, cb) ->
+  params = ['--decrypt', '--passphrase-fd', '0']
+  callGPG(text + '\n', password, params, cb)

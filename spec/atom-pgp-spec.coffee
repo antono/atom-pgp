@@ -30,7 +30,6 @@ describe "AtomPgp", ->
         atomPgpElement = workspaceElement.querySelector('.atom-pgp')
         expect(atomPgpElement).toExist()
 
-
     it "shows the view", ->
       jasmine.attachToDOM(workspaceElement)
       expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
