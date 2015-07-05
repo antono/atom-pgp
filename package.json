@@ -18,7 +18,9 @@
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
-    "event-kit": "^1.2.0",
-    "suppose": "^0.3.0"
+    "event-kit": "^1.2.0"
+  },
+  "devDependencies": {
+    "jasmine-expect": "^2.0.0-beta1"
   }
 }

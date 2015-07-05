@@ -39,11 +39,8 @@ module.exports = AtomPgp =
     atomPgpViewState: @atomPgpPasswordPrompt.serialize()
 
   encode: ->
-    console.log('Encode...')
-    @modalPanel.show()
-    @atomPgpPasswordPrompt.focus()
-    @atomPgpPasswordPrompt.onPasswordProvided (password) =>
-      @closePasswordPrompt()
+    console.log('Encoding...')
+    @requestPassword (password) =>
       editor = atom.workspace.getActiveTextEditor()
       gpg.encrypt editor.getText(), password, (err, text) =>
         if err
@@ -53,13 +50,28 @@ module.exports = AtomPgp =
           editor.setText(text)
 
   decode: ->
-    console.log('Decode...')
+    console.log('Decoding...')
+    @requestPassword (password) =>
+      editor = atom.workspace.getActiveTextEditor()
+      gpg.decrypt editor.getText(), password, (err, text) =>
+        if err
+          alert(err)
+        else
+          editor.createCheckpoint()
+          editor.setText(text)
 
   sign: ->
     console.log('Sign...')
 
   verify: ->
     console.log('Verify...')
+
+  requestPassword: (cb) ->
+    @modalPanel.show()
+    @atomPgpPasswordPrompt.focus()
+    @atomPgpPasswordPrompt.onPasswordProvided (password) =>
+      @closePasswordPrompt()
+      cb(password)
 
   closePasswordPrompt: ->
     @modalPanel.hide()

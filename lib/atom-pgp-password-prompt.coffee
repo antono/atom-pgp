@@ -8,34 +8,57 @@ class AtomPgpPasswordPrompt
     @buildDom()
     @bindEvents()
 
-  buildDom: =>
+  buildDom: ->
     # Create root element
     @element = document.createElement('div')
     @element.classList.add('atom-pgp')
 
     @label = document.createElement('label')
     @label.setAttribute('for', 'pgp-password')
-    @label.textContent = 'Enter Password: '
 
     @input = document.createElement('input')
     @input.setAttribute('type', 'password')
 
-    @label.appendChild(@input)
     @element.appendChild(@label)
+    @element.appendChild(@input)
+    @initPasswordPrompt()
 
-  bindEvents: =>
+  initPasswordPrompt: ->
+    @password = null
+    @input.value = ''
+    @label.textContent = 'Encryption password: '
+
+  initConfirmationPrompt: ->
+    @input.value = ''
+    @label.textContent = 'Confirm password: '
+
+  bindEvents: ->
     @input.addEventListener 'keydown', (ev) =>
-      if ev.keyCode is 13
-        @emitter.emit 'password-provided', @input.value
+      @emitter.emit('password-provided', @input.value) if ev.keyCode is 13
+      return true
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
 
   focus: -> @input.focus()
-  clear: -> @input.value = ''
+  clear: ->
+    @password = null
+    @passwordConfirmation = null
+    @input.value = ''
 
-  onPasswordProvided: (cb) =>
-    @emitter.on 'password-provided', cb
+  onPasswordProvided: (handlePassword) ->
+    disposable = @emitter.on 'password-provided', (password) =>
+      switch
+        when [null, undefined, ''].indexOf(password) > 0
+          alert('Please provide password')
+          @initPasswordPrompt()
+        when !!@password and (@password is password)
+          handlePassword(password)
+          disposable.dispose()
+        when !!@password and !!password
+          @password = password
+          @initConfirmationPrompt()
+
 
   # Tear down any state and detach
   destroy: ->
