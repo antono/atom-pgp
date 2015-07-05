@@ -13,6 +13,9 @@ class AtomPgpPasswordPrompt
     @element = document.createElement('div')
     @element.classList.add('atom-pgp')
 
+    @error = document.createElement('div')
+    @error.classList.add('error')
+
     @label = document.createElement('label')
     @label.setAttribute('for', 'pgp-password')
 
@@ -21,44 +24,60 @@ class AtomPgpPasswordPrompt
 
     @element.appendChild(@label)
     @element.appendChild(@input)
+    @element.appendChild(@error)
     @initPasswordPrompt()
 
   initPasswordPrompt: ->
-    @password = null
-    @input.value = ''
+    @clear()
     @label.textContent = 'Encryption password: '
 
   initConfirmationPrompt: ->
+    @clearError()
     @input.value = ''
     @label.textContent = 'Confirm password: '
 
   bindEvents: ->
     @input.addEventListener 'keydown', (ev) =>
-      @emitter.emit('password-provided', @input.value) if ev.keyCode is 13
+      if ev.keyCode is 13
+        @handlePassword(@input.value)
       return true
+
+  handlePassword: (password) ->
+    switch
+      when password.length <= 5
+        @initPasswordPrompt()
+        @showError('Please provide password of 6+ chars')
+      when !@password # provided first time
+        @password = password
+        @initConfirmationPrompt()
+      when !!@password and (@password is password)
+        @emitter.emit('password-provided', password)
+        @clearError()
+      when !!@password and (@password isnt password)
+        @initPasswordPrompt()
+        @showError('nope. try again!')
+      else
+        console.error('WTF?')
+
+  showError: (message) ->
+    @error.textContent = message
+
+  clearError: ->
+    @error.textContent = ''
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
 
   focus: -> @input.focus()
   clear: ->
+    @clearError()
     @password = null
-    @passwordConfirmation = null
     @input.value = ''
 
   onPasswordProvided: (handlePassword) ->
     disposable = @emitter.on 'password-provided', (password) =>
-      switch
-        when [null, undefined, ''].indexOf(password) > 0
-          alert('Please provide password')
-          @initPasswordPrompt()
-        when !!@password and (@password is password)
-          handlePassword(password)
-          disposable.dispose()
-        when !!@password and !!password
-          @password = password
-          @initConfirmationPrompt()
-
+      handlePassword(password)
+      disposable.dispose()
 
   # Tear down any state and detach
   destroy: ->

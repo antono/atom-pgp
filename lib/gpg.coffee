@@ -33,7 +33,6 @@ callGPG = (text, password, params, cb) =>
     else
       cb(errors, null)
 
-
 exports.encrypt = (text, password, cb) ->
   params = ['--armor', '--symmetric', '--passphrase-fd', '0']
   callGPG(text, password, params, cb)
