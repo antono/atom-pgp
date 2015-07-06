@@ -1,4 +1,6 @@
 require 'jasmine-expect'
+
+KeymapManager = require 'atom-keymap'
 AtomPgpPasswordPrompt = require '../lib/atom-pgp-password-prompt'
 
 describe "AtomPgpPasswordPrompt", ->
@@ -50,24 +52,32 @@ describe "AtomPgpPasswordPrompt", ->
       runs ->
         expect(spy).toHaveBeenCalledWith('123456')
 
-
-  describe "input events", ->
+  describe "@input events", ->
     beforeEach ->
+      @keymapManager = new KeymapManager
       @input = @view.getElement().querySelector('input')
 
-    fit "handles password when enter key pressed", ->
-      @input.value = 'verysecret'
-      spy = jasmine.createSpy('handler')
-      @view.handlePassowrd = spy
+    enterPassword = (input, pwd) ->
+      input.value = 'verysecret'
+      event = KeymapManager.buildKeydownEvent('x', { target: input, keyCode: 13 })
+      input.dispatchEvent(event)
 
-      ev = new KeyboardEvent('keydown')
-      ev.keyCode = 13
-
-      @input.dispatchEvent(ev)
+    it "handles password when enter key pressed", ->
+      pwdSpy = jasmine.createSpy('handler')
+      @view.handlePassword = pwdSpy
+      enterPassword(@input, 'verysecret')
 
       waitsFor ->
-        spy.callCount > 0
+        pwdSpy.callCount > 0
       runs ->
-        expect(spy).toHaveBeenCalledWith(null, ['verysecret'])
+        expect(pwdSpy).toHaveBeenCalledWith('verysecret')
 
     it "handles password confirmation", ->
+      providedSpy = jasmine.createSpy('passwordProvidedSpy')
+      @view.onPasswordProvided(providedSpy)
+      enterPassword(@input, 'verysecret') for step in ['pwd','confirmation']
+
+      waitsFor ->
+        providedSpy.callCount is 1
+      runs ->
+        expect(providedSpy).toHaveBeenCalledWith('verysecret')
