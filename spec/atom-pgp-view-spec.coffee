@@ -69,6 +69,8 @@ describe "AtomPgpPasswordPrompt", ->
 
       waitsFor ->
         pwdSpy.callCount > 0
+      , 'handlePassword(cb)', 100
+
       runs ->
         expect(pwdSpy).toHaveBeenCalledWith('verysecret')
 
@@ -79,5 +81,7 @@ describe "AtomPgpPasswordPrompt", ->
 
       waitsFor ->
         providedSpy.callCount is 1
+      , 'onPasswordProvided(cb)', 100
+
       runs ->
         expect(providedSpy).toHaveBeenCalledWith('verysecret')
