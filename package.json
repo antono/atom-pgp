@@ -1,15 +1,13 @@
 {
   "name": "atom-pgp",
   "main": "./lib/atom-pgp",
-  "version": "0.0.1",
-  "description": "PGP Support",
+  "version": "0.1.0",
+  "description": "PGP symmetric encryption for Atom",
   "keywords": [],
   "activationCommands": {
     "atom-workspace": [
       "atom-pgp:encode",
-      "atom-pgp:decode",
-      "atom-pgp:sign",
-      "atom-pgp:verify"
+      "atom-pgp:decode"
     ]
   },
   "repository": "https://github.com/antono/atom-pgp",
@@ -18,10 +16,10 @@
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
-    "atom-keymap": "^5.1.5",
     "event-kit": "^1.2.0"
   },
   "devDependencies": {
+    "atom-keymap": "^5.1.5",
     "jasmine-expect": "^2.0.0-beta1"
   }
 }

@@ -10,6 +10,4 @@
 'atom-text-editor':
   'ctrl-k p e': 'atom-pgp:encode'
   'ctrl-k p d': 'atom-pgp:decode'
-  'ctrl-k p s': 'atom-pgp:sign'
-  'ctrl-k p v': 'atom-pgp:verify'
-  'escape':     'core:cancel'
+  'escape':     'core:cancel' # https://github.com/atom/vim-mode/issues/91

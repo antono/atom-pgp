@@ -1,8 +1,10 @@
 # atom-pgp package
 
-PGP support for Atom.
+PGP symmetric encryption for Atom.
 
-- encode
-- decode
-- sign
-- verify
+- encode [ctrl-k p e]
+- decode [ctrl-k p d]
+
+File content will be replaced with encrypted ASCII armored message.
+
+Copyright (c) 2015 Antono Vasiljev
