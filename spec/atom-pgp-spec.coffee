@@ -3,38 +3,36 @@ AtomPgp = require '../lib/atom-pgp'
 describe "AtomPgp", ->
   [workspaceElement, activationPromise] = []
 
-  beforeEach ->
-    workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('atom-pgp')
-
   activate = (command) ->
-    waitsForPromise ->
-      activationPromise
-
+    waitsForPromise -> activationPromise
     atom.commands.dispatch workspaceElement, command
 
-  describe "when the atom-pgp:encode event is triggered", ->
+  expectVisiblePanel = ->
+    expect(workspaceElement.querySelector('.atom-pgp')).toExist()
 
-    xit "shows modal password prompt", ->
-      expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
+    atomPgpElement = workspaceElement.querySelector('.atom-pgp')
+    atomPgpPanel = atom.workspace.panelForItem(atomPgpElement)
+    expect(atomPgpPanel.isVisible()).toBe true
 
-      activate('atom-pgp:encode')
+  expectPasswordPrompt = ->
+    atomPgpElement = workspaceElement.querySelector('.atom-pgp')
+    expect(atomPgpElement).toExist()
 
-      runs ->
-        expect(workspaceElement.querySelector('.atom-pgp')).toExist()
+  beforeEach ->
+    workspaceElement  = atom.views.getView(atom.workspace)
+    activationPromise = atom.packages.activatePackage('atom-pgp')
 
-        atomPgpElement = workspaceElement.querySelector('.atom-pgp')
-        atomPgpPanel = atom.workspace.panelForItem(atomPgpElement)
-        expect(atomPgpPanel.isVisible()).toBe true
+  for event in ['atom-pgp:encode', 'atom-pgp:decode']
+    describe "when the #{event} event is triggered", ->
+      it "shows panel", ->
+        expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
+        activate(event)
+        runs ->
+          expectVisiblePanel()
 
-        atomPgpElement = workspaceElement.querySelector('.atom-pgp')
-        expect(atomPgpElement).toExist()
-
-    it "shows the view", ->
-      jasmine.attachToDOM(workspaceElement)
-      expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
-
-      activate('atom-pgp:encode')
-
-      runs ->
-        expect(workspaceElement.querySelector('.atom-pgp')).toBeVisible()
+      it "shows the password prompt", ->
+        jasmine.attachToDOM(workspaceElement)
+        expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
+        activate(event)
+        runs ->
+          expectPasswordPrompt()
