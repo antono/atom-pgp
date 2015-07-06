@@ -14,9 +14,13 @@ describe "AtomPgp", ->
     atomPgpPanel = atom.workspace.panelForItem(atomPgpElement)
     expect(atomPgpPanel.isVisible()).toBe true
 
-  expectPasswordPrompt = ->
+  expectVisiblePasswordPrompt = ->
     atomPgpElement = workspaceElement.querySelector('.atom-pgp')
     expect(atomPgpElement).toExist()
+
+  expectNoPasswordPrompt = ->
+    atomPgpElement = workspaceElement.querySelector('.atom-pgp')
+    expect(atomPgpElement).not.toExist()
 
   beforeEach ->
     workspaceElement  = atom.views.getView(atom.workspace)
@@ -25,14 +29,15 @@ describe "AtomPgp", ->
   for event in ['atom-pgp:encode', 'atom-pgp:decode']
     describe "when the #{event} event is triggered", ->
       it "shows panel", ->
-        expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
+        expectNoPasswordPrompt()
         activate(event)
         runs ->
           expectVisiblePanel()
 
       it "shows the password prompt", ->
         jasmine.attachToDOM(workspaceElement)
-        expect(workspaceElement.querySelector('.atom-pgp')).not.toExist()
+
+        expectNoPasswordPrompt()
         activate(event)
         runs ->
-          expectPasswordPrompt()
+          expectVisiblePasswordPrompt()
