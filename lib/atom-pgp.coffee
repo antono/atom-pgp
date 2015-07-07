@@ -23,8 +23,7 @@ module.exports = AtomPgp =
     @subscriptions.add atom.commands.add 'atom-workspace', {
       'atom-pgp:encode': => @encode()
       'atom-pgp:decode': => @decode()
-      'atom-pgp:sign':   => @sign()
-      'atom-pgp:verify': => @verify()
+      'atom-pgp:clearsign': => @clearsign()
       'atom-pgp:close-password-prompt': => @closePasswordPrompt()
       'core:cancel': => @closePasswordPrompt()
     }
@@ -39,7 +38,6 @@ module.exports = AtomPgp =
     atomPgpViewState: @atomPgpPasswordPrompt.serialize()
 
   encode: ->
-    console.log('Encoding...')
     @requestPassword (password) =>
       editor = atom.workspace.getActiveTextEditor()
       gpg.encrypt editor.getText(), password, (err, text) =>
@@ -50,7 +48,6 @@ module.exports = AtomPgp =
           editor.setText(text)
 
   decode: ->
-    console.log('Decoding...')
     @requestPassword (password) =>
       editor = atom.workspace.getActiveTextEditor()
       gpg.decrypt editor.getText(), password, (err, text) =>
@@ -60,11 +57,15 @@ module.exports = AtomPgp =
           editor.createCheckpoint()
           editor.setText(text)
 
-  sign: ->
-    console.log('Sign...')
-
-  verify: ->
-    console.log('Verify...')
+  clearsign: ->
+    @requestPassword (password) =>
+      editor = atom.workspace.getActiveTextEditor()
+      gpg.clearsign editor.getText(), password, (err, text) =>
+        if err
+          alert(err)
+        else
+          editor.createCheckpoint()
+          editor.setText(text)
 
   requestPassword: (cb) ->
     @modalPanel.show()

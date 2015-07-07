@@ -40,3 +40,7 @@ exports.encrypt = (text, password, cb) ->
 exports.decrypt = (text, password, cb) ->
   params = ['--decrypt', '--passphrase-fd', '0']
   callGPG(text + '\n', password, params, cb)
+
+exports.clearsign = (text, password, cb) ->
+  params = ['--clearsign', '--passphrase-fd', '0']
+  callGPG(text + '\n', password, params, cb)

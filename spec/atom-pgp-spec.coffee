@@ -26,7 +26,7 @@ describe "AtomPgp", ->
     workspaceElement  = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('atom-pgp')
 
-  for event in ['atom-pgp:encode', 'atom-pgp:decode']
+  for event in ['atom-pgp:encode', 'atom-pgp:decode', 'atom-pgp:clearsign']
     describe "when the #{event} event is triggered", ->
       it "shows panel", ->
         expectNoPasswordPrompt()
