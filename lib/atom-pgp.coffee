@@ -24,8 +24,7 @@ module.exports = AtomPgp =
       'atom-pgp:encode': => @encode()
       'atom-pgp:decode': => @decode()
       'atom-pgp:clearsign': => @clearsign()
-      'atom-pgp:close-password-prompt': => @closePasswordPrompt()
-      'core:cancel': => @closePasswordPrompt()
+      'core:cancel': => @_closePasswordPrompt()
     }
 
 
@@ -38,7 +37,7 @@ module.exports = AtomPgp =
     atomPgpViewState: @credentialsDialog.serialize()
 
   encode: ->
-    @requestPassword (password) =>
+    @_requestPassword (password) =>
       editor = atom.workspace.getActiveTextEditor()
       gpg.encrypt editor.getText(), password, (err, text) =>
         if err
@@ -48,7 +47,7 @@ module.exports = AtomPgp =
           editor.setText(text)
 
   decode: ->
-    @requestPassword (password) =>
+    @_requestPassword (password) =>
       editor = atom.workspace.getActiveTextEditor()
       gpg.decrypt editor.getText(), password, (err, text) =>
         if err
@@ -58,7 +57,7 @@ module.exports = AtomPgp =
           editor.setText(text)
 
   clearsign: ->
-    @requestPassword (password) =>
+    @_requestPassword (password) =>
       editor = atom.workspace.getActiveTextEditor()
       gpg.clearsign editor.getText(), password, (err, text) =>
         if err
@@ -67,14 +66,14 @@ module.exports = AtomPgp =
           editor.createCheckpoint()
           editor.setText(text)
 
-  requestPassword: (cb) ->
+  _requestPassword: (cb) ->
     @modalPanel.show()
     @credentialsDialog.focus()
     @credentialsDialog.onPasswordProvided (password) =>
       @closePasswordPrompt()
       cb(password)
 
-  closePasswordPrompt: ->
+  _closePasswordPrompt: ->
     @modalPanel.hide()
     @credentialsDialog.clear()
     atom.workspace.getActivePane().activate()
