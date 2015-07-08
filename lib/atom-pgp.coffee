@@ -1,4 +1,4 @@
-AtomPgpPasswordPrompt = require './atom-pgp-password-prompt'
+AtomPgpPasswordDialog = require './atom-pgp-password-dialog'
 {CompositeDisposable} = require 'atom'
 
 gpg = require './gpg'
@@ -9,10 +9,10 @@ module.exports = AtomPgp =
   subscriptions: null
 
   activate: (state) ->
-    @atomPgpPasswordPrompt = new AtomPgpPasswordPrompt(state.atomPgpViewState)
+    @AtomPgpPasswordDialog = new AtomPgpPasswordDialog(state.atomPgpViewState)
 
     @modalPanel = atom.workspace.addModalPanel(
-      item: @atomPgpPasswordPrompt.getElement()
+      item: @AtomPgpPasswordDialog.getElement()
       visible: false
     )
 
@@ -32,10 +32,10 @@ module.exports = AtomPgp =
   deactivate: ->
     @modalPanel.destroy()
     @subscriptions.dispose()
-    @atomPgpPasswordPrompt.destroy()
+    @AtomPgpPasswordDialog.destroy()
 
   serialize: ->
-    atomPgpViewState: @atomPgpPasswordPrompt.serialize()
+    atomPgpViewState: @AtomPgpPasswordDialog.serialize()
 
   encode: ->
     @requestPassword (password) =>
@@ -69,12 +69,12 @@ module.exports = AtomPgp =
 
   requestPassword: (cb) ->
     @modalPanel.show()
-    @atomPgpPasswordPrompt.focus()
-    @atomPgpPasswordPrompt.onPasswordProvided (password) =>
+    @AtomPgpPasswordDialog.focus()
+    @AtomPgpPasswordDialog.onPasswordProvided (password) =>
       @closePasswordPrompt()
       cb(password)
 
   closePasswordPrompt: ->
     @modalPanel.hide()
-    @atomPgpPasswordPrompt.clear()
+    @AtomPgpPasswordDialog.clear()
     atom.workspace.getActivePane().activate()

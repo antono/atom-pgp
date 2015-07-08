@@ -1,14 +1,14 @@
 require 'jasmine-expect'
 
 KeymapManager = require 'atom-keymap'
-AtomPgpPasswordPrompt = require '../lib/atom-pgp-password-prompt'
+AtomPgpPasswordDialog = require '../lib/atom-pgp-password-dialog'
 
-describe "AtomPgpPasswordPrompt", ->
+describe "AtomPgpPasswordDialog", ->
   beforeEach ->
-    @view = new AtomPgpPasswordPrompt
+    @view = new AtomPgpPasswordDialog
 
   it "is prepared", ->
-    expect(@view instanceof AtomPgpPasswordPrompt).toBe true
+    expect(@view instanceof AtomPgpPasswordDialog).toBe true
 
   describe "markup", ->
     beforeEach ->
