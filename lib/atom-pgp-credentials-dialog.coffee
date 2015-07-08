@@ -1,7 +1,7 @@
 {Emitter} = require 'event-kit'
 
 module.exports =
-class AtomPgpPasswordPrompt
+class AtomPgpCredentialsDialog
 
   constructor: (serializedState) ->
     @emitter = new Emitter
