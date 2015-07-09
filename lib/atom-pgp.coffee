@@ -43,8 +43,7 @@ module.exports = AtomPgp =
         if err
           alert(err)
         else
-          editor.createCheckpoint()
-          editor.setText(text)
+          @_replaceBufferOrSelection(text, editor)
 
   decode: ->
     @_requestPassword (password) =>
@@ -53,8 +52,7 @@ module.exports = AtomPgp =
         if err
           alert(err)
         else
-          editor.createCheckpoint()
-          editor.setText(text)
+          @_replaceBufferOrSelection(text, editor)
 
   clearsign: ->
     @_requestPassword (password) =>
@@ -63,17 +61,24 @@ module.exports = AtomPgp =
         if err
           alert(err)
         else
-          editor.createCheckpoint()
-          editor.setText(text)
+          @_replaceBufferOrSelection(text, editor)
 
   _requestPassword: (cb) ->
     @modalPanel.show()
     @credentialsDialog.focus()
     @credentialsDialog.onPasswordProvided (password) =>
-      @closePasswordPrompt()
+      @_closePasswordPrompt()
       cb(password)
 
   _closePasswordPrompt: ->
     @modalPanel.hide()
     @credentialsDialog.clear()
     atom.workspace.getActivePane().activate()
+
+  _replaceBufferOrSelection: (text, editor) ->
+    editor.createCheckpoint()
+    selection = editor.getLastSelection()
+    if selection.getText() is ''
+      editor.setText(text)
+    else
+      selection.insertText(text)

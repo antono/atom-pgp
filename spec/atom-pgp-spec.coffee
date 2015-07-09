@@ -1,7 +1,16 @@
 AtomPgp = require '../lib/atom-pgp'
 
 describe "AtomPgp", ->
-  [workspaceElement, activationPromise] = []
+  [workspaceElement, activationPromise, textEditor] = []
+
+  getEditorElement = (callback) ->
+    waitsForPromise ->
+      atom.project.open().then (e) ->
+        textEditor = e
+    runs ->
+      element = document.createElement("atom-text-editor")
+      element.setModel(textEditor)
+      callback(element.getModel())
 
   activate = (command) ->
     waitsForPromise -> activationPromise
@@ -41,3 +50,18 @@ describe "AtomPgp", ->
         activate(event)
         runs ->
           expectVisiblePasswordDialog()
+
+  describe "._replaceBufferOrSelection(text)", ->
+    it "when selection is not empty it will be replaced with given text", ->
+      getEditorElement (editor) ->
+        editor.setText("hello world\nmore text\none more line")
+        editor.addSelectionForBufferRange([[1,0], [1,9]])
+        AtomPgp._replaceBufferOrSelection('xxx', editor)
+        expect(editor.lineTextForBufferRow(1)).toBe('xxx')
+
+    it "when selection empty it will replace all text", ->
+      getEditorElement (editor) ->
+        editor.setText("hello world\nmore text\none more line")
+        AtomPgp._replaceBufferOrSelection('XXX', editor)
+        expect(editor.lineTextForBufferRow(0)).toBe('XXX')
+        expect(editor.lineTextForBufferRow(1)).toBe(undefined)
