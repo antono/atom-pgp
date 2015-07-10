@@ -5,7 +5,7 @@ describe "AtomPgp", ->
 
   getEditorElement = (callback) ->
     waitsForPromise ->
-      atom.project.open().then (e) ->
+      atom.workspace.open('hello.txt').then (e) ->
         textEditor = e
     runs ->
       element = document.createElement("atom-text-editor")
@@ -56,12 +56,38 @@ describe "AtomPgp", ->
       getEditorElement (editor) ->
         editor.setText("hello world\nmore text\none more line")
         editor.addSelectionForBufferRange([[1,0], [1,9]])
-        AtomPgp._replaceBufferOrSelection('xxx', editor)
+        AtomPgp._replaceBufferOrSelection('xxx')
         expect(editor.lineTextForBufferRow(1)).toBe('xxx')
 
     it "when selection empty it will replace all text", ->
       getEditorElement (editor) ->
         editor.setText("hello world\nmore text\none more line")
-        AtomPgp._replaceBufferOrSelection('XXX', editor)
+        AtomPgp._replaceBufferOrSelection('XXX')
         expect(editor.lineTextForBufferRow(0)).toBe('XXX')
         expect(editor.lineTextForBufferRow(1)).toBe(undefined)
+
+  describe "._withBufferOrSelection(cb(text))", ->
+    it "when selection is not empty it will pass selection to cb", ->
+      getEditorElement (editor) ->
+        editor.setText("hello world\nmore text\none more line")
+        editor.addSelectionForBufferRange([[1,0], [1,9]])
+
+        cbSpy = jasmine.createSpy('callback')
+        AtomPgp._withBufferOrSelection(cbSpy)
+
+        waitsFor ->
+          cbSpy.callCount > 0
+        runs ->
+          expect(cbSpy).toHaveBeenCalledWith('more text')
+
+    it "when selection empty it will pass full text to cb", ->
+      getEditorElement (editor) ->
+        editor.setText("all text\n")
+
+        cbSpy = jasmine.createSpy('callback')
+        AtomPgp._withBufferOrSelection(cbSpy)
+
+        waitsFor ->
+          cbSpy.callCount > 0
+        runs ->
+          expect(cbSpy).toHaveBeenCalledWith('all text\n')

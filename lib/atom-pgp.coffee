@@ -36,23 +36,26 @@ module.exports = AtomPgp =
     atomPgpViewState: @credentialsDialog.serialize()
 
   encode: ->
+    # TODO: looks like pyramid of DOOM
     @_requestPassword (password) =>
-      editor = atom.workspace.getActiveTextEditor()
-      gpg.encrypt editor.getText(), password, (err, text) =>
-        if err
-          alert(err)
-        else
-          @_replaceBufferOrSelection(text, editor)
+      @_withBufferOrSelection (text) =>
+        gpg.encrypt text, password, (err, text) =>
+          if err
+            alert(err)
+          else
+            @_replaceBufferOrSelection(text)
 
   decode: ->
+    # TODO: looks like pyramid of DOOM
     @_requestPassword (password) =>
-      editor = atom.workspace.getActiveTextEditor()
-      gpg.decrypt editor.getText(), password, (err, text) =>
-        if err
-          alert(err)
-        else
-          @_replaceBufferOrSelection(text, editor)
+      @_withBufferOrSelection (text) =>
+        gpg.decrypt text, password, (err, text) =>
+          if err
+            alert(err)
+          else
+            @_replaceBufferOrSelection(text)
 
+  # TODO: implement key selection
   clearsign: ->
     @_requestPassword (password) =>
       editor = atom.workspace.getActiveTextEditor()
@@ -74,10 +77,19 @@ module.exports = AtomPgp =
     @credentialsDialog.clear()
     atom.workspace.getActivePane().activate()
 
-  _replaceBufferOrSelection: (text, editor) ->
+  _replaceBufferOrSelection: (text) ->
+    editor = atom.workspace.getActiveTextEditor()
     editor.createCheckpoint()
     selection = editor.getLastSelection()
     if selection.getText() is ''
       editor.setText(text)
     else
       selection.insertText(text)
+
+  _withBufferOrSelection: (cb) ->
+    editor = atom.workspace.getActiveTextEditor()
+    selection = editor.getLastSelection().getText()
+    if selection is ''
+      cb(editor.getText())
+    else
+      cb(selection)
