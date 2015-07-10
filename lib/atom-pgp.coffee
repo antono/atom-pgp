@@ -27,7 +27,6 @@ module.exports = AtomPgp =
       'core:cancel': => @_closePasswordPrompt()
     }
 
-
   deactivate: ->
     @modalPanel.destroy()
     @subscriptions.dispose()
