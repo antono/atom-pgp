@@ -1,4 +1,4 @@
-AtomPgpCredentialsDialog = require './atom-pgp-credentials-dialog'
+AtomPgpCredentialsDialog = require './atom-pgp-credentials-dialog-view'
 {CompositeDisposable} = require 'atom'
 
 gpg = require './gpg'

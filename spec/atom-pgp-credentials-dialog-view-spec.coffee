@@ -1,7 +1,7 @@
 require 'jasmine-expect'
 
 KeymapManager = require 'atom-keymap'
-AtomPgpCredentialsDialog = require '../lib/atom-pgp-credentials-dialog'
+AtomPgpCredentialsDialog = require '../lib/atom-pgp-credentials-dialog-view'
 
 describe "AtomPgpCredentialsDialog", ->
   beforeEach ->
