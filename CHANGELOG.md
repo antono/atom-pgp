@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Decrypt selection properly if present
+
 ## 0.2.0
 
 * If active selection present then only selection will be encrypted.
