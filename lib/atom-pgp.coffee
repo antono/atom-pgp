@@ -24,6 +24,7 @@ module.exports = AtomPgp =
       'atom-pgp:encode': => @encode()
       'atom-pgp:decode': => @decode()
       'atom-pgp:clearsign': => @clearsign()
+      'atom-pgp:paste': => @paste()
       'core:cancel': => @_closePasswordPrompt()
     }
 
@@ -64,6 +65,10 @@ module.exports = AtomPgp =
           alert(err)
         else
           @_replaceBufferOrSelection(text, editor)
+
+  paste: ->
+    input = @credentialsDialog.element.querySelector('input:focus')
+    input.value = atom.clipboard.read()
 
   _requestPassword: (cb) ->
     @modalPanel.show()

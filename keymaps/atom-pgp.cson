@@ -11,3 +11,6 @@
   'ctrl-k p e': 'atom-pgp:encode'
   'ctrl-k p d': 'atom-pgp:decode'
   'escape':     'core:cancel' # https://github.com/atom/vim-mode/issues/91
+
+'.atom-pgp input':
+  'ctrl-v': 'atom-pgp:paste'

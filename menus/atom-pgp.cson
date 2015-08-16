@@ -16,14 +16,6 @@
           'label': 'PGP Decode'
           'command': 'atom-pgp:decode'
         }
-        {
-          'label': 'PGP Sign'
-          'command': 'atom-pgp:sign'
-        }
-        {
-          'label': 'PGP Verify'
-          'command': 'atom-pgp:verify'
-        }
       ]
     ]
   }
