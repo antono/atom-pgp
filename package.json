@@ -1,7 +1,7 @@
 {
   "name": "atom-pgp",
   "main": "./lib/atom-pgp",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "PGP symmetric encryption for Atom",
   "keywords": [],
   "activationCommands": {
