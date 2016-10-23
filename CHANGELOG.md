@@ -1,3 +1,13 @@
+## 0.5.0
+
+* Rewrite to ES6
+* Use OpenPGP.js for encryption
+* Get rid of clearsign functionality
+
+## 0.4.0
+
+* Close password dialog when escape key pressed
+
 ## 0.3.0
 
 * Decrypt selection properly if present

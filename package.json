@@ -17,7 +17,8 @@
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
-    "event-kit": "^1.4.1"
+    "event-kit": "^1.4.1",
+    "openpgp": "^2.3.4"
   },
   "devDependencies": {
     "atom-keymap": "^6.1.0",
